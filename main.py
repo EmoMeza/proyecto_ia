@@ -4,10 +4,10 @@ import time
 from poke_env.player import Player, RandomPlayer
 from poke_env import ServerConfiguration
 
-my_server_conf= ServerConfiguration(
-    "http://pokemon.oracle.rartigues.com-8989.psim.us/",
-     "authentication-endpoint.com/action.php?"
-)
+# my_server_conf= ServerConfiguration(
+#     "pokemon.oracle.rartigues.com",
+#     "https://play.pokemonshowdown.com/action.php"
+# )
 
 class MaxDamagePlayer(Player):
     def choose_move(self, battle):

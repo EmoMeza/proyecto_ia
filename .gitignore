@@ -161,3 +161,4 @@ cython_debug/
 Pipfile*
 #ignore directory named replays
 replays/
+pokemon-showdown

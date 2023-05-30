@@ -162,3 +162,4 @@ Pipfile*
 #ignore directory named replays
 replays/
 pokemon-showdown/
+pokemon-showdown

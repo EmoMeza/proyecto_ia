@@ -3,7 +3,7 @@ import time
 import numpy as np
 import json
 import random
-
+import poke_env
 from poke_env.player import Player, RandomPlayer
 from poke_env.player_configuration import PlayerConfiguration
 
@@ -17,7 +17,20 @@ class MaxDamagePlayer(Player):
         else:
             return self.choose_random_move(battle)
         
-#class MinDamagePlayer(Player):
+class MaxDefensePlayer(Player):
+    protected = False
+    def choose_move(self, battle):
+        if battle.available_moves:
+            if self.protected == False:
+                best_move = max(battle.available_moves, key=lambda move: move.is_protect_move)
+                self.protected = True
+            else:
+                print(battle.))
+                best_move = max(battle.available_moves, key=lambda move: move.base_power)
+                self.protected = False
+            return self.create_order(best_move)
+        else:
+            return self.choose_random_move(battle)
 
 
 # Main function
@@ -28,7 +41,7 @@ async def main():
 
     #We set the player configuration
     uc=PlayerConfiguration("Equipobot",None)
-    max_damage_player = MaxDamagePlayer(battle_format="gen7ou", team=bot_team,player_configuration=uc)
+    mdp = MaxDefensePlayer(battle_format="gen7ou", team=bot_team,player_configuration=uc)
 
     # We create a player that will play randomly as an opponent
     ramdom_player = RandomPlayer(battle_format="gen7ou", save_replays=True, team= enemy_team)
@@ -48,7 +61,7 @@ async def main():
 
     # Loop where the battles are played and the teams are updated
     # for x in range(number_of_teams):
-    await max_damage_player.battle_against(ramdom_player, n_battles=matches_per_team)
+    await mdp.battle_against(ramdom_player, n_battles=matches_per_team)
     enemy_team = await create_enemy_team()
     
     #update_team is a method that I (Emo) created in the Player class to update the team

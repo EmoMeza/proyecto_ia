@@ -16,6 +16,9 @@ class MaxDamagePlayer(Player):
             return self.create_order(best_move)
         else:
             return self.choose_random_move(battle)
+        
+#class MinDamagePlayer(Player):
+
 
 # Main function
 async def main():
@@ -32,26 +35,27 @@ async def main():
 
 
     # The following are the setup for the Code to run
-    number_of_teams = input("How many teams do you want to battle against? ")
-    number_of_teams = int(number_of_teams)
+    # number_of_teams = input("How many teams do you want to battle against? ")
+    # number_of_teams = int(number_of_teams)
 
     matches_per_team = input("How many matches do you want to play per team? ")
     matches_per_team = int(matches_per_team)
 
-    total_matches = number_of_teams * matches_per_team
+    # total_matches = number_of_teams * matches_per_team
 
     # Start the timer
     start = time.time()
 
     # Loop where the battles are played and the teams are updated
-    for x in range(number_of_teams):
-        await max_damage_player.battle_against(ramdom_player, n_battles=matches_per_team)
-        enemy_team = await create_enemy_team()
-        #update_team is a method that I (Emo) created in the Player class to update the team
-        await ramdom_player.update_team(enemy_team)
+    # for x in range(number_of_teams):
+    await max_damage_player.battle_against(ramdom_player, n_battles=matches_per_team)
+    enemy_team = await create_enemy_team()
+    
+    #update_team is a method that I (Emo) created in the Player class to update the team
+    # await ramdom_player.update_team(enemy_team)
 
     # Final results
-    print(f"From a total of {total_matches} matches, the bot won {max_damage_player.n_won_battles} matches.\nGetting a win rate of {max_damage_player.n_won_battles/total_matches*100}% \nTime elapsed: {time.time() - start} seconds")
+    # print(f"From a total of matches, the bot won {max_damage_player.n_won_battles} matches.\nGetting a win rate of {max_damage_player.n_won_battles/total_matches*100}% \nTime elapsed: {time.time() - start} seconds")
 
 
 ### Functions to create the teams

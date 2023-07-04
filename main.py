@@ -8,26 +8,51 @@ from poke_env.player import Player, RandomPlayer
 from poke_env.player_configuration import PlayerConfiguration
 
 
+
 #Code to create a player that always chooses the move with the highest base power
-class MaxDamagePlayer(Player):
+class MaxDamagePlayer(Player): #borrar esto y pegar lo que esta en el main sobre max damage player
     def choose_move(self, battle):
+        last_pokemon = None
         if battle.available_moves:
+
+            if battle.turn == 1:
+                if last_pokemon != battle.active_pokemon:
+                    for move in battle.available_moves:
+                        if move.id == "fakeout" and battle.opponent_active_pokemon.type_1 != "Ghost" and battle.opponent_active_pokemon.type_2 != "Ghost":
+                            last_pokemon = battle.active_pokemon
+                            return self.create_order(move)
+                
             best_move = max(battle.available_moves, key=lambda move: move.base_power)
             return self.create_order(best_move)
+            last_pokemon = battle.active_pokemon
         else:
             return self.choose_random_move(battle)
+            last_pokemon = battle.active_pokemon
         
 class MaxDefensePlayer(Player):
+    last_pokemon = ""
     protected = False
     def choose_move(self, battle):
         if battle.available_moves:
+            print(battle.active_pokemon.species) #Revisar como se llama el pokemon activo y guardarlo en una variable para checkear si es el mismo
+            if battle.turn == 1:
+                if last_pokemon != battle.active_pokemon.data["pokedex"]:#Revisar como se llama el pokemon activo y guardarlo en una variable para checkear si es el mismo
+                    for move in battle.available_moves:
+                        if move.id == "fakeout" and battle.opponent_active_pokemon.type_1 != "Ghost" and battle.opponent_active_pokemon.type_2 != "Ghost":
+                            last_pokemon = battle.active_pokemon.data["pokedex"]#Revisar como se llama el pokemon activo y guardarlo en una variable para checkear si es el mismo
+                            return self.create_order(move)
+            
+                
             if self.protected == False:
                 best_move = max(battle.available_moves, key=lambda move: move.is_protect_move)
                 self.protected = True
             else:
-                print(battle.))
-                best_move = max(battle.available_moves, key=lambda move: move.base_power)
+                if battle.active_pokemon.current_hp_fraction < 0.45:
+                    best_move = max(battle.available_moves, key=lambda move: move.heal)
+                else:
+                    best_move = max(battle.available_moves, key=lambda move: move.base_power)
                 self.protected = False
+            last_pokemon = battle.active_pokemon.data["pokedex"]
             return self.create_order(best_move)
         else:
             return self.choose_random_move(battle)

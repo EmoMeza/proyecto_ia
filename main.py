@@ -3,98 +3,162 @@ import time
 import numpy as np
 import json
 import random
-import poke_env
+import poke_env.data
 from poke_env.player import Player, RandomPlayer
 from poke_env.player_configuration import PlayerConfiguration
+from poke_env.player.player import Player
+from poke_env.environment.move import Move
+from poke_env.environment.pokemon import Pokemon
 
 
 
 #Code to create a player that always chooses the move with the highest base power
-class MaxDamagePlayer(Player): #borrar esto y pegar lo que esta en el main sobre max damage player
-    def choose_move(self, battle):
-        last_pokemon = None
-        if battle.available_moves:
 
-            if battle.turn == 1:
-                if last_pokemon != battle.active_pokemon:
-                    for move in battle.available_moves:
-                        if move.id == "fakeout" and battle.opponent_active_pokemon.type_1 != "Ghost" and battle.opponent_active_pokemon.type_2 != "Ghost":
-                            last_pokemon = battle.active_pokemon
-                            return self.create_order(move)
-                
-            best_move = max(battle.available_moves, key=lambda move: move.base_power)
+
+class MaxDamagePlayer(Player):
+    def choose_move(self, battle):
+        # If the player can attack, it will
+        if battle.available_moves:
+            # Finds the best move among available ones
+            best_move = max(battle.available_moves, key=lambda move: self.damage_multiplier(move, battle.opponent_active_pokemon))
             return self.create_order(best_move)
-            last_pokemon = battle.active_pokemon
+
+        # If no attack is available, a random switch will be made
         else:
             return self.choose_random_move(battle)
-            last_pokemon = battle.active_pokemon
+
+    def damage_multiplier(self, move: Move, opponent: Pokemon):
+        # Check if the move is a damaging move
+        if move.base_power > 0:
+            # Get the type multiplier
+            type_multiplier = opponent.damage_multiplier(move.type)
+            return move.base_power * type_multiplier
+        else:
+            return 0
         
+
+
 class MaxDefensePlayer(Player):
     last_pokemon = ""
     protected = False
+
+    def is_ghost_type(self, pokemon):
+        return pokemon.type_1 == "Ghost" or pokemon.type_2 == "Ghost"
+    
+    def fakeout_available(self, moves, opponent_pokemon):
+        return any(move.id == "fakeout" and not self.is_ghost_type(opponent_pokemon) for move in moves)
+    
     def choose_move(self, battle):
-        if battle.available_moves:
-            print(battle.active_pokemon.species) #Revisar como se llama el pokemon activo y guardarlo en una variable para checkear si es el mismo
-            if battle.turn == 1:
-                if last_pokemon != battle.active_pokemon.data["pokedex"]:#Revisar como se llama el pokemon activo y guardarlo en una variable para checkear si es el mismo
-                    for move in battle.available_moves:
-                        if move.id == "fakeout" and battle.opponent_active_pokemon.type_1 != "Ghost" and battle.opponent_active_pokemon.type_2 != "Ghost":
-                            last_pokemon = battle.active_pokemon.data["pokedex"]#Revisar como se llama el pokemon activo y guardarlo en una variable para checkear si es el mismo
-                            return self.create_order(move)
-            
-                
-            if self.protected == False:
-                best_move = max(battle.available_moves, key=lambda move: move.is_protect_move)
-                self.protected = True
-            else:
-                if battle.active_pokemon.current_hp_fraction < 0.45:
-                    best_move = max(battle.available_moves, key=lambda move: move.heal)
-                else:
-                    best_move = max(battle.available_moves, key=lambda move: move.base_power)
-                self.protected = False
-            last_pokemon = battle.active_pokemon.data["pokedex"]
-            return self.create_order(best_move)
-        else:
+        if not battle.available_moves:
             return self.choose_random_move(battle)
+
+        if battle.turn == 1 or self.last_pokemon != battle.active_pokemon.species:
+            self.last_pokemon = battle.active_pokemon.species
+            if self.fakeout_available(battle.available_moves, battle.opponent_active_pokemon):
+                move = next(move for move in battle.available_moves if move.id == "fakeout")
+                # print(f"Turn 1 or new active pokemon: {self.last_pokemon}")
+                # print(f"Best Move: {move}")
+                return self.create_order(move)
+
+        if not self.protected and "protect" in [move.id for move in battle.available_moves]:
+            best_move = max(battle.available_moves, key=lambda move: move.is_protect_move)
+            self.protected = True
+        else:
+            if battle.active_pokemon.current_hp_fraction < 0.45:
+                best_move = max(battle.available_moves, key=lambda move: move.heal)
+            else:
+                best_move = max(battle.available_moves, key=lambda move: self.damage_multiplier(move, battle.opponent_active_pokemon))
+                # print(f"Best Move: {best_move}")
+            self.protected = False
+
+        # If the current pokemon has weak defense against the opponent's pokemon type, switch to the best pokemon for the circumstance
+        if battle.active_pokemon.current_hp_fraction < 0.45:
+            if battle.active_pokemon.damage_multiplier(battle.opponent_active_pokemon.type_1) > 1 or \
+                battle.active_pokemon.damage_multiplier(battle.opponent_active_pokemon.type_2) > 1:
+                best_pokemon = max(battle.team.values(), key=lambda mon: (mon.current_hp_fraction, -mon.damage_multiplier(battle.opponent_active_pokemon.type_1), -mon.damage_multiplier(battle.opponent_active_pokemon.type_2)))
+                return self.create_order(best_pokemon)
+
+        self.last_pokemon = battle.active_pokemon.species
+        return self.create_order(best_move)
+
+    def damage_multiplier(self, move: Move, opponent: Pokemon):
+        # Check if the move is a damaging move
+        if move.base_power > 0:
+            # Get the type multiplier
+            type_multiplier = opponent.damage_multiplier(move.type)
+            return move.base_power * type_multiplier
+        else:
+            return 0
+
+
+
+# class MaxDefensePlayer(Player): 
+#     last_pokemon = ""
+#     protected = False
+
+#     def is_ghost_type(self, pokemon):
+#         return pokemon.type_1 == "Ghost" or pokemon.type_2 == "Ghost"
+    
+#     def fakeout_available(self, moves, opponent_pokemon):
+#         return any(move.id == "fakeout" and not self.is_ghost_type(opponent_pokemon) for move in moves)
+    
+#     def damage_multiplier(self, move: Move, opponent: Pokemon):
+#         # Check if the move is a damaging move
+#         if move.base_power > 0:
+#             # Get the type multiplier
+#             type_multiplier = opponent.damage_multiplier(move.type)
+#             return move.base_power * type_multiplier
+#         else:
+#             return 0
+
+#     def choose_move(self, battle):
+#         if not battle.available_moves:
+#             return self.choose_random_move(battle)
+
+#         if battle.turn == 1 or self.last_pokemon != battle.active_pokemon.species:
+#             self.last_pokemon = battle.active_pokemon.species
+#             if self.fakeout_available(battle.available_moves, battle.opponent_active_pokemon):
+#                 move = next(move for move in battle.available_moves if move.id == "fakeout")
+#                 print(f"Turn 1 or new active pokemon: {self.last_pokemon}")
+#                 # print(f"Best Move: {move}")
+#                 return self.create_order(move)
+
+#         if not self.protected and "protect" in [move.id for move in battle.available_moves]:
+#             best_move = max(battle.available_moves, key=lambda move: self.damage_multiplier(move, battle.opponent_active_pokemon))
+#             self.protected = True
+#         else:
+#             if battle.active_pokemon.current_hp_fraction < 0.45:
+#                 best_move = max(battle.available_moves, key=lambda move: self.damage_multiplier(move, battle.opponent_active_pokemon))
+#             else:
+#                 best_move = max(battle.available_moves, key=lambda move: self.damage_multiplier(move, battle.opponent_active_pokemon))
+#                 # print(f"Best Move: {best_move}")
+#             self.protected = False
+
+#         self.last_pokemon = battle.active_pokemon.species
+#         return self.create_order(best_move)
+
 
 
 # Main function
 async def main():
     # We create the teams 
     bot_team = await get_bot_team() 
-    enemy_team = await create_enemy_team()
+    enemy_team1 = await create_enemy_team()
+    enemy_team2 = await create_enemy_team()
+
 
     #We set the player configuration
-    uc=PlayerConfiguration("Equipobot",None)
-    mdp = MaxDefensePlayer(battle_format="gen7ou", team=bot_team,player_configuration=uc)
+    configuracion_max_damage=PlayerConfiguration("MaxDamage",None)
+    configuracion_max_defense=PlayerConfiguration("MaxDefense",None)
 
-    # We create a player that will play randomly as an opponent
-    ramdom_player = RandomPlayer(battle_format="gen7ou", save_replays=True, team= enemy_team)
-
-
-    # The following are the setup for the Code to run
-    # number_of_teams = input("How many teams do you want to battle against? ")
-    # number_of_teams = int(number_of_teams)
-
-    matches_per_team = input("How many matches do you want to play per team? ")
-    matches_per_team = int(matches_per_team)
-
-    # total_matches = number_of_teams * matches_per_team
-
-    # Start the timer
+    max_damage_player=MaxDamagePlayer(battle_format="gen7ou", team=enemy_team1,player_configuration=configuracion_max_damage)
+    max_defense_player=MaxDefensePlayer(battle_format="gen7ou", team=enemy_team2,player_configuration=configuracion_max_defense)
+    
     start = time.time()
 
-    # Loop where the battles are played and the teams are updated
-    # for x in range(number_of_teams):
-    await mdp.battle_against(ramdom_player, n_battles=matches_per_team)
-    enemy_team = await create_enemy_team()
-    
-    #update_team is a method that I (Emo) created in the Player class to update the team
-    # await ramdom_player.update_team(enemy_team)
+    await max_damage_player.battle_against(max_defense_player, n_battles=100)
 
-    # Final results
-    # print(f"From a total of matches, the bot won {max_damage_player.n_won_battles} matches.\nGetting a win rate of {max_damage_player.n_won_battles/total_matches*100}% \nTime elapsed: {time.time() - start} seconds")
-
+    print(f"From a total of matches, the bot won {max_damage_player.n_won_battles} matches.\nGetting a win rate of {max_damage_player.n_won_battles/100*100}% \nTime elapsed: {time.time() - start} seconds")
 
 ### Functions to create the teams
 

@@ -21,8 +21,14 @@ From a total matches of 5000 matches
 MaxDamagePlayer won 3024 with a winrate of 0.6048
 MaxDefensePlayer won 1976 with a winrate of 0.3952
 
+total time of execution: 831.704332113266 seconds
+From a total matches of 5000 matches
+MaxDamagePlayer won 3912 with a winrate of 0.7824
+MaxDefensePlayer won 1088 with a winrate of 0.2176
+
 sin cambios siempre (10%) y con toxic agregado (solamente si tiene toxic y si el enemigo no tiene estatus e inmunidades)
 total time of execution: 528.2058019638062 seconds
-From a total matches of 5000 matches 
+From a total matches of 5000 matches mo
 MaxDamagePlayer won 3657 with a winrate of 0.7314
 MaxDefensePlayer won 1343 with a winrate of 0.2686
+

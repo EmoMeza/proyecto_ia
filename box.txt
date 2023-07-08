@@ -1,5 +1,6 @@
 Lopunny @ Lopunnite  
 Ability: Cute Charm  
+Tera Type: Normal  
 EVs: 252 Atk / 4 SpD / 252 Spe  
 Jolly Nature  
 - Fake Out  
@@ -9,6 +10,7 @@ Jolly Nature
 
 Volcarona @ Firium Z  
 Ability: Flame Body  
+Tera Type: Bug  
 EVs: 252 SpA / 4 SpD / 252 Spe  
 Modest Nature  
 IVs: 0 Atk  
@@ -19,6 +21,7 @@ IVs: 0 Atk
 
 Greninja @ Choice Specs  
 Ability: Battle Bond  
+Tera Type: Water  
 EVs: 252 SpA / 4 SpD / 252 Spe  
 Timid Nature  
 - Water Shuriken  
@@ -28,6 +31,7 @@ Timid Nature
 
 Amoonguss @ Rocky Helmet  
 Ability: Regenerator  
+Tera Type: Grass  
 EVs: 248 HP / 8 SpA / 252 SpD  
 Calm Nature  
 IVs: 0 Atk  
@@ -38,6 +42,7 @@ IVs: 0 Atk
 
 Sableye @ Sablenite  
 Ability: Prankster  
+Tera Type: Dark  
 EVs: 248 HP / 8 Atk / 252 Def  
 Impish Nature  
 - Fake Out  
@@ -47,6 +52,7 @@ Impish Nature
 
 Hawlucha @ Focus Sash  
 Ability: Unburden  
+Tera Type: Fighting  
 EVs: 252 Atk / 4 SpD / 252 Spe  
 Adamant Nature  
 - Acrobatics  
@@ -56,6 +62,7 @@ Adamant Nature
 
 Landorus-Therian (M) @ Choice Scarf  
 Ability: Intimidate  
+Tera Type: Ground  
 EVs: 252 Atk / 4 SpD / 252 Spe  
 Jolly Nature  
 - Rock Slide  
@@ -65,6 +72,7 @@ Jolly Nature
 
 Tornadus-Therian (M) @ Iapapa Berry  
 Ability: Regenerator  
+Tera Type: Flying  
 EVs: 252 HP / 4 Atk / 252 Spe  
 Jolly Nature  
 - Tailwind  
@@ -74,6 +82,7 @@ Jolly Nature
 
 Tapu Lele @ Psychic Seed  
 Ability: Psychic Surge  
+Tera Type: Psychic  
 EVs: 252 SpA / 4 SpD / 252 Spe  
 Timid Nature  
 IVs: 0 Atk  
@@ -84,6 +93,7 @@ IVs: 0 Atk
 
 Tapu Koko @ Tapunium Z  
 Ability: Electric Surge  
+Tera Type: Electric  
 EVs: 252 SpA / 4 SpD / 252 Spe  
 Timid Nature  
 IVs: 0 Atk  
@@ -94,6 +104,7 @@ IVs: 0 Atk
 
 Tyranitar @ Tyranitarite  
 Ability: Sand Stream  
+Tera Type: Rock  
 EVs: 252 HP / 4 Atk / 252 SpD  
 Careful Nature  
 - Crunch  
@@ -103,6 +114,7 @@ Careful Nature
 
 Scizor @ Scizorite  
 Ability: Technician  
+Tera Type: Bug  
 EVs: 248 HP / 8 Atk / 252 Def  
 Impish Nature  
 - Bullet Punch  
@@ -112,6 +124,7 @@ Impish Nature
 
 Blacephalon @ Life Orb  
 Ability: Beast Boost  
+Tera Type: Fire  
 EVs: 252 SpA / 4 SpD / 252 Spe  
 Timid Nature  
 IVs: 0 Atk  
@@ -122,6 +135,7 @@ IVs: 0 Atk
 
 Garchomp @ Yache Berry  
 Ability: Rough Skin  
+Tera Type: Dragon  
 EVs: 252 Atk / 4 SpD / 252 Spe  
 Jolly Nature  
 - Protect  
@@ -131,16 +145,17 @@ Jolly Nature
 
 Skarmory @ Leftovers  
 Ability: Sturdy  
+Tera Type: Steel  
 EVs: 252 HP / 232 Def / 24 Spe  
 Bold Nature  
-IVs: 0 Atk  
-- Spikes  
+- Brave Bird  
 - Roost  
 - Toxic  
 - Whirlwind  
 
 Mimikyu @ Mimikium Z  
 Ability: Disguise  
+Tera Type: Ghost  
 EVs: 252 Atk / 4 SpD / 252 Spe  
 Jolly Nature  
 - Protect  
@@ -150,6 +165,7 @@ Jolly Nature
 
 Ninetales-Alola @ Babiri Berry  
 Ability: Snow Cloak  
+Tera Type: Ice  
 EVs: 252 SpA / 4 SpD / 252 Spe  
 Timid Nature  
 IVs: 0 Atk  
@@ -160,6 +176,7 @@ IVs: 0 Atk
 
 Toxapex @ Black Sludge  
 Ability: Regenerator  
+Tera Type: Poison  
 EVs: 252 HP / 252 Def / 4 SpA  
 Bold Nature  
 IVs: 0 Atk  
@@ -167,3 +184,4 @@ IVs: 0 Atk
 - Surf  
 - Recover  
 - Toxic  
+

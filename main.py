@@ -16,22 +16,38 @@ from poke_env.environment.pokemon import Pokemon
 
 
 class MaxDamagePlayer(Player):
+    choiced_attacks_qty = 0
     def choose_move(self, battle):
         # If the player can attack, it will
         if battle.available_moves:
-            # Finds the best move among available ones
+
+            #check if the item is choiceband, choicespecs or choicesscarf
+            if battle.active_pokemon.item == "choiceband" or battle.active_pokemon.item == "choicepecs" or battle.active_pokemon.item == "choicescarf":
+                self.choiced_attacks_qty += 1
+                if self.choiced_attacks_qty>2:
+                    self.choiced_attacks_qty=0
+                    best_pokemon = max(battle.team.values(), key=lambda mon: (mon.current_hp_fraction, -mon.damage_multiplier(battle.opponent_active_pokemon.type_1), -mon.damage_multiplier(battle.opponent_active_pokemon.type_2)))
+                    return self.create_order(best_pokemon)
+                
             best_move = max(battle.available_moves, key=lambda move: self.damage_multiplier(move, battle.opponent_active_pokemon))
+            #20% chance to use boost move
+            if np.random.rand() < 0.2 and best_move.boosts:
+                best_move=min(battle.available_moves, key=lambda move: move.base_power)
             return self.create_order(best_move)
+        
+        
 
         # If no attack is available, a random switch will be made
         else:
             return self.choose_random_move(battle)
-
     def damage_multiplier(self, move: Move, opponent: Pokemon):
         # Check if the move is a damaging move
         if move.base_power > 0:
             # Get the type multiplier
             type_multiplier = opponent.damage_multiplier(move.type)
+            if type_multiplier == 0:
+                return 0
+            
             return move.base_power * type_multiplier
         else:
             return 0
@@ -41,6 +57,7 @@ class MaxDamagePlayer(Player):
 class MaxDefensePlayer(Player):
     last_pokemon = ""
     protected = False
+    spikes_num = 0
 
     def is_ghost_type(self, pokemon):
         return pokemon.type_1 == "Ghost" or pokemon.type_2 == "Ghost"
@@ -83,6 +100,11 @@ class MaxDefensePlayer(Player):
 
         self.last_pokemon = battle.active_pokemon.species
         return self.create_order(best_move)
+
+    def choose_switch(self, battle):
+        # Chooses the Pokémon with the best defensive type matchup against the opponent's active Pokémon
+        best_pokemon = max(battle.available_switches, key=lambda mon: 1 / max(opponent_move.base_power * mon.damage_multiplier(opponent_move.type) for opponent_move in battle.opponent_active_pokemon.moves.values()))
+        return self.create_order(best_pokemon)
 
     def damage_multiplier(self, move: Move, opponent: Pokemon):
         # Check if the move is a damaging move

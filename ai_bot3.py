@@ -7,14 +7,23 @@ from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 from tabulate import tabulate
-from tensorflow.python.keras.layers import Dense, Flatten
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.optimizers import adam_v2 as Adam
+
+import tensorflow as tf
+import keras
+
+# from tensorflow.python.keras.layers import Dense, Flatten
+from keras.layers import Dense, Activation, Flatten, CuDNNLSTM, LSTM
+# from tensorflow.python.keras.models import Sequential
+from keras.models import Sequential
+from keras.optimizers import Adam
 
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.data import GenData
 from poke_env.player import (
     background_evaluate_player,
+    evaluate_player,
     background_cross_evaluate,
+    cross_evaluate,
     Gen8EnvSinglePlayer,
     RandomPlayer,
     MaxBasePowerPlayer,
@@ -43,6 +52,7 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
                 moves_dmg_multiplier[i] = move.type.damage_multiplier(
                     battle.opponent_active_pokemon.type_1,
                     battle.opponent_active_pokemon.type_2,
+                    type_chart = GenData.from_gen(7).type_chart
                 )
 
         # We count how many pokemons have fainted in each team
@@ -97,10 +107,10 @@ async def main():
 
     # Create model
     model = Sequential()
-    model.add(Dense(128, activation="elu", input_shape=input_shape))
+    model.add(Dense(128, name="Initial", activation="elu", input_shape=input_shape, kernel_initializer='he_uniform', use_bias=False))
     model.add(Flatten())
-    model.add(Dense(64, activation="elu"))
-    model.add(Dense(n_action, activation="linear"))
+    model.add(Dense(64, name="Middle", activation="elu", kernel_initializer='he_uniform'))
+    model.add(Dense(n_action, activation="linear", name="Output", kernel_initializer='he_uniform', kernel_regularizer=keras.regularizers.l2(0.01), bias_regularizer=keras.regularizers.l2(0.01)))
 
     # Defining the DQN
     memory = SequentialMemory(limit=10000, window_length=1)
@@ -125,7 +135,7 @@ async def main():
         delta_clip=0.01,
         enable_double_dqn=True,
     )
-    dqn.compile(Adam(learning_rate=0.00025), metrics=["mae"])
+    dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
     # Training the model
     dqn.fit(train_env, nb_steps=10000)
@@ -133,31 +143,55 @@ async def main():
 
     # Evaluating the model
     print("Results against random player:")
-    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
     eval_env.reset_env(restart=True, opponent=second_opponent)
     print("Results against max base power player:")
-    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     eval_env.reset_env(restart=False)
 
+    eval_env.reset_env(restart=True, opponent=opponent)
+
+
+    #! DESDE ACA HACIA ABAJO ESTA TODO CURSEEDDD. PARA VER COMO ESTA, DEJAR CORRER COMO ESTA
+
     # Evaluate the player with included util method
-    n_challenges = 250
+    # n_challenges = 30
+    # placement_battles = 40
+    # eval_task = background_evaluate_player(
+    #     eval_env.agent, n_challenges, placement_battles
+    # )
+    # dqn.test(eval_env, nb_episodes=n_challenges, verbose=True, visualize=True) #! HANGS HERE ON LAST EPISODE
+    # print("Evaluation with included method:", eval_task.result())
+    # eval_env.reset_env(restart=False)
+
+    #! CHAT GPTTTT !!!!! ORIGINAL ARRIBA
+    # Evaluate the player with included util method
+    n_challenges = 30
     placement_battles = 40
-    eval_task = background_evaluate_player(
-        eval_env.agent, n_challenges, placement_battles
+
+    # Note: The evaluate_player function returns a future. You can call result() on it to get the result.
+    evaluation_future = evaluate_player(
+        player=eval_env.agent,
+        n_battles=n_challenges,
+        n_placement_battles=placement_battles,
     )
-    dqn.test(eval_env, nb_episodes=n_challenges, verbose=False, visualize=False)
-    print("Evaluation with included method:", eval_task.result())
+    print("Evaaaaaaa ", evaluation_future)
+    evaluation_result = evaluation_future
+    print("Evaluation with included method:", evaluation_result)
+
     eval_env.reset_env(restart=False)
 
+    # eval_env.reset_env(restart=True)
+
     # Cross evaluate the player with included util method
-    n_challenges = 50
+    n_challenges = 30
     players = [
         eval_env.agent,
         RandomPlayer(battle_format="gen8randombattle"),
@@ -168,8 +202,8 @@ async def main():
     dqn.test(
         eval_env,
         nb_episodes=n_challenges * (len(players) - 1),
-        verbose=False,
-        visualize=False,
+        verbose=True,
+        visualize=True,
     )
     cross_evaluation = cross_eval_task.result()
     table = [["-"] + [p.username for p in players]]

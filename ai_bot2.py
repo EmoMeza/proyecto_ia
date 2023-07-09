@@ -7,7 +7,8 @@ from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 from rl.agents.dqn import DQNAgent
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
-from tensorflow.python.keras.layers import Dense, Flatten
+from tensorflow.python.keras.layers import Dense
+from tensorflow.python.util.nest import flatten as Flatten
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.optimizers import adam_v2 as Adam
 

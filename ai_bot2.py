@@ -9,7 +9,7 @@ from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
 from tensorflow.python.keras.layers import Dense, Flatten
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.optimizers import Adam
+from tensorflow.python.keras.optimizers import adam_v2 as Adam
 
 
 # We define our RL player

@@ -1,0 +1,70 @@
+50000 iteraciones
+10000/10000 [==============================] - 213s 21ms/step - reward: 0.1028
+174 episodes - episode_reward: 5.922 [-43.010, 46.628] - loss: 0.010 - mae: 0.246 - mean_q: 0.405 - mean_eps: 0.896
+
+Interval 2 (10000 steps performed)
+10000/10000 [==============================] - 218s 22ms/step - reward: 0.4314
+224 episodes - episode_reward: 19.251 [-40.090, 46.919] - loss: 0.011 - mae: 0.262 - mean_q: 0.428 - mean_eps: 0.715
+
+Interval 3 (20000 steps performed)
+10000/10000 [==============================] - 218s 22ms/step - reward: 0.7211
+260 episodes - episode_reward: 27.741 [-42.740, 47.346] - loss: 0.012 - mae: 0.269 - mean_q: 0.444 - mean_eps: 0.525
+
+Interval 4 (30000 steps performed)
+10000/10000 [==============================] - 225s 22ms/step - reward: 1.0736
+308 episodes - episode_reward: 34.838 [-40.160, 47.185] - loss: 0.013 - mae: 0.274 - mean_q: 0.452 - mean_eps: 0.335
+
+Interval 5 (40000 steps performed)
+10000/10000 [==============================] - 229s 23ms/step - reward: 1.2476
+done, took 1104.469 seconds
+Results against random player:
+DQN Evaluation: 99 victories out of 100 episodes
+Results against max base power player:
+DQN Evaluation: 78 victories out of 100 episodes
+Evaaaaaaa  <coroutine object evaluate_player at 0x000001DDE025BAC0>
+Evaluation with included method: <coroutine object evaluate_player at 0x000001DDE025BAC0>
+Cross evaluation of DQN with baselines:
+------------------  -------------------  ------------------  -------------------  -------------------
+-                   SimpleRLPlayer 3     RandomPlayer 4      MaxBasePowerPlay 2   SimpleHeuristics 1
+SimpleRLPlayer 3                         0.9666666666666667  0.7333333333333333   0.16666666666666666
+RandomPlayer 4      0.03333333333333333                      0.06666666666666667  0.03333333333333333
+MaxBasePowerPlay 2  0.26666666666666666  0.9333333333333333                       0.06666666666666667
+SimpleHeuristics 1  0.8333333333333334   0.9666666666666667  0.9333333333333333
+------------------  -------------------  ------------------  -------------------  -------------------
+
+
+100000 iteraciones
+10000/10000 [==============================] - 221s 22ms/step - reward: 0.0403
+170 episodes - episode_reward: 2.389 [-43.940, 44.196] - loss: 0.010 - mae: 0.246 - mean_q: 0.404 - mean_eps: 0.948
+
+Interval 2 (10000 steps performed)
+10000/10000 [==============================] - 235s 24ms/step - reward: 0.3111
+197 episodes - episode_reward: 15.779 [-42.310, 45.146] - loss: 0.011 - mae: 0.262 - mean_q: 0.431 - mean_eps: 0.858
+
+Interval 3 (20000 steps performed)
+10000/10000 [==============================] - 238s 24ms/step - reward: 0.2885
+207 episodes - episode_reward: 13.936 [-42.900, 46.299] - loss: 0.011 - mae: 0.274 - mean_q: 0.454 - mean_eps: 0.763
+
+Interval 4 (30000 steps performed)
+10000/10000 [==============================] - 244s 24ms/step - reward: 0.5395
+232 episodes - episode_reward: 23.227 [-40.480, 47.459] - loss: 0.012 - mae: 0.283 - mean_q: 0.471 - mean_eps: 0.668
+
+Interval 5 (40000 steps performed)
+10000/10000 [==============================] - 246s 25ms/step - reward: 0.7591
+262 episodes - episode_reward: 28.947 [-37.730, 47.391] - loss: 0.012 - mae: 0.287 - mean_q: 0.480 - mean_eps: 0.573
+
+
+
+Interval 8 (70000 steps performed)
+10000/10000 [==============================] - 254s 25ms/step - reward: 1.2176
+330 episodes - episode_reward: 36.883 [-37.360, 47.904] - loss: 0.014 - mae: 0.300 - mean_q: 0.500 - mean_eps: 0.288
+
+Interval 9 (80000 steps performed)
+10000/10000 [==============================] - 255s 25ms/step - reward: 1.2743
+348 episodes - episode_reward: 36.629 [-35.540, 47.782] - loss: 0.014 - mae: 0.298 - mean_q: 0.494 - mean_eps: 0.193
+
+Interval 10 (90000 steps performed)
+10000/10000 [==============================] - 249s 25ms/step - reward: 1.2767
+done, took 2452.125 seconds
+Results against random player:
+2023-07-09 17:25:32,346 - SimpleRLPlayer 3 - WARNING - Received pm: |pm| SimpleRLPlayer 3|~|/error /choose - must be used in a chat room, not a console

@@ -188,6 +188,9 @@ async def main():
 
     eval_env.reset_env(restart=False)
 
+
+    #! HASTA ACA CURSED
+
     # eval_env.reset_env(restart=True)
 
     # Cross evaluate the player with included util method
@@ -216,3 +219,7 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())
+
+
+
+    # * https://pastebin.com/5dbijZSH <- Como hacer que se vaya guardando

@@ -141,8 +141,8 @@ async def main():
     dqn.load_weights('dqn_weights.h5f')
 
     # Training the model
-    dqn.fit(train_env, nb_steps=100000)
-    train_env.close()
+    # dqn.fit(train_env, nb_steps=100000)
+    # train_env.close()
 
     # Evaluating the model
     print("Results against random player:")

@@ -114,7 +114,9 @@ async def main():
     
     start = time.time()
 
-    await max_damage_player.battle_against(max_defense_player, n_battles=5000)
+    # await max_damage_player.battle_against(max_defense_player, n_battles=5000)
+
+    await max_damage_player.send_challenges('DANIELmichel',1)
 
     print(f"total time of execution: {time.time() - start} seconds")
     print(f"From a total matches of {max_damage_player.n_won_battles + max_defense_player.n_won_battles} matches \nMaxDamagePlayer won {max_damage_player.n_won_battles} with a winrate of {max_damage_player.n_won_battles/(max_damage_player.n_won_battles + max_defense_player.n_won_battles)} \nMaxDefensePlayer won {max_defense_player.n_won_battles} with a winrate of {max_defense_player.n_won_battles/(max_damage_player.n_won_battles + max_defense_player.n_won_battles)}")

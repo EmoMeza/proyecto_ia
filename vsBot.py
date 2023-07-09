@@ -6,10 +6,12 @@ from threading import Thread
 import keras
 
 from poke_env import to_id_str
-
+from poke_env.player import Player
+from poke_env.player_configuration import PlayerConfiguration
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten
 from keras.optimizers import Adam
+from poke_env.data import GenData
 
 from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
@@ -70,12 +72,11 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 
 
 async def main():
-    # Create two instances of the SimpleRLPlayer for self-play training
-    p1 = SimpleRLPlayer(battle_format="gen8randombattle")
-    p2 = SimpleRLPlayer(battle_format="gen8randombattle")
+    # Create two instances of the SimpleRLPlayer for self-play training    
+    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent=RandomPlayer())
 
     # Create the environment for training
-    train_env = wrap_for_old_gym_api(p1)
+    train_env = wrap_for_old_gym_api(rl_player)
 
     # Compute dimensions
     n_action = train_env.action_space.n
@@ -116,23 +117,9 @@ async def main():
     # Load the pre-trained weights for p1
     dqn.load_weights('dqn_weights.h5f')
 
-    # Create threads for self-play training
-    env_algorithm_kwargs = {"n_battles": 5}
+    await rl_player.send_challenges('DANIELmichel', 1)
 
-    t1 = Thread(target=lambda: env_algorithm_wrapper(p1, train_env, env_algorithm_kwargs))
-    t1.start()
-
-    t2 = Thread(target=lambda: env_algorithm_wrapper(p2, train_env, env_algorithm_kwargs))
-    t2.start()
-
-    # Wait for self-play training to complete
-    t1.join()
-    t2.join()
-
-    # Save the trained weights
-    dqn.save_weights('self_play_weights.h5f')
-
-    train_env.close()
+    # train_env.close()
 
 
 def env_algorithm(player, train_env, kwargs):

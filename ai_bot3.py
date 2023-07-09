@@ -143,14 +143,14 @@ async def main():
 
     # Evaluating the model
     print("Results against random player:")
-    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)                   #* Deberia tener 100 episodios
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
     eval_env.reset_env(restart=True, opponent=second_opponent)
     print("Results against max base power player:")
-    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)                   #* Deberia tener 100 episodios
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )

@@ -1,16 +1,24 @@
 import numpy as np
 import tensorflow as tf
 
-from poke_env.player import Gen7EnvSinglePlayer, RandomPlayer
+from poke_env.player import Gen7EnvSinglePlayer, RandomPlayer, wrap_for_old_gym_api
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+
+from poke_env.data import GenData
 
 from rl.agents.dqn import DQNAgent
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
-from tensorflow.python.keras.layers import Dense
-from tensorflow.python.util.nest import flatten as Flatten
+from tensorflow.python.keras.layers import Dense, Flatten
+# from tensorflow.python.util.nest import flatten as Flatten
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.optimizers import adam_v2 as Adam
+#from tensorflow.python.keras.optimizers import adam_v2
+from keras.optimizers.adam import Adam
+#from tensorflow.python.keras.optimizer_v2 import adam as AdamOptimizer
+from gym.spaces import Space, Box
+
+from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.player.openai_api import ObservationType
 
 
 # We define our RL player
@@ -21,6 +29,8 @@ class SimpleRLPlayer(Gen7EnvSinglePlayer):
         # or is not available
         moves_base_power = -np.ones(4)
         moves_dmg_multiplier = np.ones(4)
+        print("flag")
+        print(battle.active_pokemon.damage_multiplier(move.type))
         for i, move in enumerate(battle.available_moves):
             moves_base_power[i] = (
                 move.base_power / 100
@@ -29,7 +39,10 @@ class SimpleRLPlayer(Gen7EnvSinglePlayer):
                 moves_dmg_multiplier[i] = move.type.damage_multiplier(
                     battle.opponent_active_pokemon.type_1,
                     battle.opponent_active_pokemon.type_2,
+                    typechart=GenData.from_gen(7).type_chart
                 )
+
+
 
         # We count how many pokemons have not fainted in each team
         remaining_mon_team = (
@@ -46,6 +59,54 @@ class SimpleRLPlayer(Gen7EnvSinglePlayer):
                 moves_dmg_multiplier,
                 [remaining_mon_team, remaining_mon_opponent],
             ]
+        )
+
+    def calc_reward(self, last_battle, current_battle) -> float:
+        return self.reward_computing_helper(
+            current_battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
+        )
+
+    def embed_battle(self, battle: AbstractBattle) -> ObservationType:
+        # -1 indicates that the move does not have a base power
+        # or is not available
+        moves_base_power = -np.ones(4)
+        moves_dmg_multiplier = np.ones(4)
+        print("fla1g")
+        for i, move in enumerate(battle.available_moves):
+            print("flag for " + str(i))
+            moves_base_power[i] = (
+                move.base_power / 100
+            )  # Simple rescaling to facilitate learning
+            if move.type:
+                moves_dmg_multiplier[i] = move.type.damage_multiplier(
+                    battle.opponent_active_pokemon.type_1,
+                    battle.opponent_active_pokemon.type_2,
+                    type_chart=GenData.from_gen(7).type_chart
+                )
+
+        # We count how many pokemons have fainted in each team
+        fainted_mon_team = len([mon for mon in battle.team.values() if mon.fainted]) / 6
+        fainted_mon_opponent = (
+            len([mon for mon in battle.opponent_team.values() if mon.fainted]) / 6
+        )
+
+        # Final vector with 10 components
+        final_vector = np.concatenate(
+            [
+                moves_base_power,
+                moves_dmg_multiplier,
+                [fainted_mon_team, fainted_mon_opponent],
+            ]
+        )
+        return np.float32(final_vector)
+
+    def describe_embedding(self) -> Space:
+        low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
+        high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
+        return Box(
+            np.array(low, dtype=np.float32),
+            np.array(high, dtype=np.float32),
+            dtype=np.float32,
         )
 
     def compute_reward(self, battle) -> float:
@@ -92,16 +153,17 @@ def dqn_evaluation(player, dqn, nb_episodes):
 
 
 if __name__ == "__main__":
-    env_player = SimpleRLPlayer(
-        player_configuration=PlayerConfiguration("RL Player", None),
-        battle_format="gen7randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
-
+    
     opponent = RandomPlayer(
         player_configuration=PlayerConfiguration("Random player", None),
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
+    )
+
+    env_player = SimpleRLPlayer(
+        player_configuration=PlayerConfiguration("RL Player", None),
+        battle_format="gen7randombattle",
+        opponent=opponent
     )
 
     second_opponent = MaxDamagePlayer(
@@ -109,12 +171,13 @@ if __name__ == "__main__":
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
+    train_env = wrap_for_old_gym_api(env_player)
 
     # Output dimension
-    n_action = len(env_player.action_space)
+    n_action = env_player.action_space.n
 
     model = Sequential()
-    model.add(Dense(128, activation="elu", input_shape=(1, 10)))
+    model.add(Dense(128, activation="elu", input_shape=(10,)))
 
     # Our embedding have shape (1, 10), which affects our hidden layer
     # dimension and output dimension
@@ -148,14 +211,17 @@ if __name__ == "__main__":
         enable_double_dqn=True,
     )
 
-    dqn.compile(Adam(lr=0.00025), metrics=["mae"])
+    dqn.compile(Adam(learning_rate=0.00025), metrics=["mae"])
 
     # Training
-    env_player.play_against(
-        env_algorithm=dqn_training,
-        opponent=opponent,
-        env_algorithm_kwargs={"dqn": dqn, "nb_steps": NB_TRAINING_STEPS},
-    )
+    # env_player.play_against(
+    #     env_algorithm=dqn_training,
+    #     opponent=opponent,
+    #     env_algorithm_kwargs={"dqn": dqn, "nb_steps": NB_TRAINING_STEPS},
+    # )
+
+    dqn.fit(env_player, nb_steps=NB_TRAINING_STEPS)
+    env_player.close()
     model.save("model_%d" % NB_TRAINING_STEPS)
 
     # Evaluation

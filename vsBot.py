@@ -6,10 +6,12 @@ from threading import Thread
 import keras
 
 from poke_env import to_id_str
-
+from poke_env.player import Player
+from poke_env.player_configuration import PlayerConfiguration
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten
 from keras.optimizers import Adam
+from poke_env.data import GenData
 
 from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
@@ -70,12 +72,11 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 
 
 async def main():
-    # Create two instances of the SimpleRLPlayer for self-play training
-    p1 = SimpleRLPlayer(battle_format="gen8randombattle")
-    p2 = SimpleRLPlayer(battle_format="gen8randombattle")
+    # Create an instance of the SimpleRLPlayer
+    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent=RandomPlayer())
 
     # Create the environment for training
-    train_env = wrap_for_old_gym_api(p1)
+    train_env = wrap_for_old_gym_api(rl_player)
 
     # Compute dimensions
     n_action = train_env.action_space.n
@@ -113,48 +114,15 @@ async def main():
     )
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
-    # Load the pre-trained weights for p1
+    # Load the pre-trained weights for rl_player
     dqn.load_weights('dqn_weights.h5f')
 
-    # Create threads for self-play training
-    env_algorithm_kwargs = {"n_battles": 5}
+    await rl_player.send_challenges('DANIELmichel', 1)
 
-    t1 = Thread(target=lambda: env_algorithm_wrapper(p1, train_env, env_algorithm_kwargs))
-    t1.start()
-
-    t2 = Thread(target=lambda: env_algorithm_wrapper(p2, train_env, env_algorithm_kwargs))
-    t2.start()
-
-    # Wait for self-play training to complete
-    t1.join()
-    t2.join()
-
-    # Save the trained weights
-    dqn.save_weights('self_play_weights.h5f')
+    while len(rl_player.battles) >= 0:
+        await rl_player.battle_against('DANIELmichel', n_battles=1)
 
     train_env.close()
-
-
-def env_algorithm(player, train_env, kwargs):
-    for _ in range(kwargs["n_battles"]):
-        done = False
-        player.reset()
-        while not done:
-            action = player.act(train_env)
-            observation, reward, done, _ = train_env.step(action)
-            player.observe(observation, reward, done, training=True)
-
-
-def env_algorithm_wrapper(player, train_env, kwargs):
-    env_algorithm(player, train_env, kwargs)
-
-    player._start_new_battle = False
-    while True:
-        try:
-            player.complete_current_battle()
-            player.reset()
-        except OSError:
-            break
 
 
 if __name__ == "__main__":

@@ -73,7 +73,7 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 
 async def main():
     # Create an instance of the SimpleRLPlayer
-    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent=RandomPlayer())
+    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent="EMILIOmeza")
 
     # Create the environment for training
     train_env = wrap_for_old_gym_api(rl_player)
@@ -115,15 +115,11 @@ async def main():
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
     # Load the pre-trained weights for rl_player
-    dqn.load_weights('dqn_weights.h5f')
-
-    await rl_player.send_challenges('DANIELmichel', 1)
-
-    while len(rl_player.battles) >= 0:
-        await rl_player.battle_against('DANIELmichel', n_battles=1)
+    # dqn.load_weights('dqn_weights.h5f')
+    # await rl_player.send_challenges('EMILIOmeza', 1)
+    dqn.test(train_env, nb_episodes=1, verbose=True, visualize=True) 
 
     train_env.close()
-
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())

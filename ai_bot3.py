@@ -141,8 +141,10 @@ async def main():
     dqn.load_weights('dqn_weights.h5f')
 
     # Training the model
-    # dqn.fit(train_env, nb_steps=100000)
-    # train_env.close()
+    dqn.fit(train_env, nb_steps=100000)
+    train_env.close()
+    dqn.save_weights('dqn_weights.h5f', overwrite=True)
+    print("Training done and saved.")
 
     # Evaluating the model
     print("Results against random player:")
@@ -218,7 +220,6 @@ async def main():
     print("Cross evaluation of DQN with baselines:")
     print(tabulate(table))
 
-    dqn.save_weights('dqn_weights.h5f', overwrite=True)
 
     eval_env.close()
 

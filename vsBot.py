@@ -72,7 +72,7 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 
 
 async def main():
-    # Create two instances of the SimpleRLPlayer for self-play training    
+    # Create an instance of the SimpleRLPlayer
     rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent=RandomPlayer())
 
     # Create the environment for training
@@ -114,34 +114,15 @@ async def main():
     )
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
-    # Load the pre-trained weights for p1
+    # Load the pre-trained weights for rl_player
     dqn.load_weights('dqn_weights.h5f')
 
     await rl_player.send_challenges('DANIELmichel', 1)
 
-    # train_env.close()
+    while len(rl_player.battles) >= 0:
+        await rl_player.battle_against('DANIELmichel', n_battles=1)
 
-
-def env_algorithm(player, train_env, kwargs):
-    for _ in range(kwargs["n_battles"]):
-        done = False
-        player.reset()
-        while not done:
-            action = player.act(train_env)
-            observation, reward, done, _ = train_env.step(action)
-            player.observe(observation, reward, done, training=True)
-
-
-def env_algorithm_wrapper(player, train_env, kwargs):
-    env_algorithm(player, train_env, kwargs)
-
-    player._start_new_battle = False
-    while True:
-        try:
-            player.complete_current_battle()
-            player.reset()
-        except OSError:
-            break
+    train_env.close()
 
 
 if __name__ == "__main__":

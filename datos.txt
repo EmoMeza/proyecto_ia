@@ -32,3 +32,22 @@ From a total matches of 5000 matches mo
 MaxDamagePlayer won 3657 with a winrate of 0.7314
 MaxDefensePlayer won 1343 with a winrate of 0.2686
 
+maxdefatq con equipo max defensive contra max damage
+total time of execution: 436.0977613925934 seconds
+From a total matches of 4775 matches 
+MaxDamagePlayer won 4775 with a winrate of 0.955
+MaxDefAtq123 won 225 with a winrate of 0.045
+
+maxdefatq con equipo max defensive contra max defense
+
+PS D:\Programas\gits\proyecto_ia> python3 .\main.py
+total time of execution: 2875.5340440273285 seconds
+From a total matches of 2692 matches
+MaxDefense won 2692 with a winrate of 
+MaxDefAtq123 won 2308 with a winrate of 
+
+maxdefatq con equipo max damage contra max damage
+
+
+maxdefatq con equipo max damage contra max defense
+

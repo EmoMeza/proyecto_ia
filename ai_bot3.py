@@ -1,5 +1,6 @@
 import asyncio
 import numpy as np
+import sys
 
 from gym.spaces import Space, Box
 from gym.utils.env_checker import check_env
@@ -113,7 +114,7 @@ async def main():
     model.add(Dense(n_action, activation="linear", name="Output", kernel_initializer='he_uniform', kernel_regularizer=keras.regularizers.l2(0.01), bias_regularizer=keras.regularizers.l2(0.01)))
 
     # Defining the DQN
-    memory = SequentialMemory(limit=10000, window_length=1)
+    memory = SequentialMemory(limit=100000, window_length=1)
 
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
@@ -121,7 +122,7 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=10000,
+        nb_steps=100000,
     )
 
     dqn = DQNAgent(
@@ -137,20 +138,22 @@ async def main():
     )
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
+    dqn.load_weights('dqn_weights.h5f')
+
     # Training the model
-    dqn.fit(train_env, nb_steps=10000)
+    dqn.fit(train_env, nb_steps=100000)
     train_env.close()
 
     # Evaluating the model
     print("Results against random player:")
-    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)                   #* Deberia tener 100 episodios
+    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)                   #* Deberia tener 100 episodios
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
     eval_env.reset_env(restart=True, opponent=second_opponent)
     print("Results against max base power player:")
-    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)                   #* Deberia tener 100 episodios
+    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)                   #* Deberia tener 100 episodios
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
@@ -172,8 +175,8 @@ async def main():
     # eval_env.reset_env(restart=False)
 
     #! CHAT GPTTTT !!!!! ORIGINAL ARRIBA
-    # Evaluate the player with included util method
-    n_challenges = 30
+    # Evaluate the player with included util methods
+    n_challenges = 100
     placement_battles = 40
 
     # Note: The evaluate_player function returns a future. You can call result() on it to get the result.
@@ -194,7 +197,7 @@ async def main():
     # eval_env.reset_env(restart=True)
 
     # Cross evaluate the player with included util method
-    n_challenges = 30
+    n_challenges = 100
     players = [
         eval_env.agent,
         RandomPlayer(battle_format="gen8randombattle"),
@@ -214,6 +217,9 @@ async def main():
         table.append([p_1] + [cross_evaluation[p_1][p_2] for p_2 in results])
     print("Cross evaluation of DQN with baselines:")
     print(tabulate(table))
+
+    dqn.save_weights('dqn_weights.h5f', overwrite=True)
+
     eval_env.close()
 
 

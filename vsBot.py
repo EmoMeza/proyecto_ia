@@ -20,7 +20,7 @@ from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player import ObservationType
 from gym.spaces import Space, Box
 
-
+from poke_env import ShowdownServerConfiguration
 
 
 class SimpleRLPlayer(Gen8EnvSinglePlayer):
@@ -73,7 +73,8 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 
 async def main():
     # Create an instance of the SimpleRLPlayer
-    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent="EMILIOmeza")
+    rl_config = PlayerConfiguration("name", "pass")
+    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent="JuliobotProyecto",server_configuration=ShowdownServerConfiguration, player_configuration=rl_config)
 
     # Create the environment for training
     train_env = wrap_for_old_gym_api(rl_player)
@@ -115,9 +116,9 @@ async def main():
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
     # Load the pre-trained weights for rl_player
-    # dqn.load_weights('dqn_weights.h5f')
+    dqn.load_weights('dqn_weights.h5f')
     # await rl_player.send_challenges('EMILIOmeza', 1)
-    dqn.test(train_env, nb_episodes=1, verbose=True, visualize=True) 
+    dqn.test(train_env, nb_episodes=0, verbose=True, visualize=True) 
 
     train_env.close()
 

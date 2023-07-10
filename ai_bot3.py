@@ -114,7 +114,7 @@ async def main():
     model.add(Dense(n_action, activation="linear", name="Output", kernel_initializer='he_uniform', kernel_regularizer=keras.regularizers.l2(0.01), bias_regularizer=keras.regularizers.l2(0.01)))
 
     # Defining the DQN
-    memory = SequentialMemory(limit=100000, window_length=1)
+    memory = SequentialMemory(limit=250000, window_length=1)
 
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
@@ -122,7 +122,7 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=100000,
+        nb_steps=250000,
     )
 
     dqn = DQNAgent(
@@ -141,7 +141,7 @@ async def main():
     dqn.load_weights('dqn_weights.h5f')
 
     # Training the model
-    dqn.fit(train_env, nb_steps=100000)
+    dqn.fit(train_env, nb_steps=250000)
     train_env.close()
     dqn.save_weights('dqn_weights.h5f', overwrite=True)
     print("Training done and saved.")

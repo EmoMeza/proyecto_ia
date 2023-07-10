@@ -1,56 +1,55 @@
-Skarmory @ Leftovers  
-Ability: Sturdy  
-EVs: 252 HP / 232 Def / 24 Spe  
-Bold Nature  
-IVs: 0 Atk  
-- Spikes  
+Corviknight @ Leftovers  
+Ability: Mirror Armor  
+EVs: 252 HP / 4 Atk / 252 SpD  
+Careful Nature  
 - Roost  
-- Toxic  
-- Whirlwind  
+- Iron Defense  
+- Body Press  
+- Brave Bird  
 
-Greninja @ Choice Specs  
-Ability: Battle Bond  
-EVs: 252 SpA / 4 SpD / 252 Spe  
-Timid Nature  
-- Water Shuriken  
-- Ice Beam  
-- Dark Pulse  
-- U-turn  
-
-Landorus-Therian (M) @ Choice Scarf  
-Ability: Intimidate  
+Urshifu-Rapid-Strike @ Choice Scarf  
+Ability: Unseen Fist  
 EVs: 252 Atk / 4 SpD / 252 Spe  
 Jolly Nature  
-- Rock Slide  
-- Earthquake  
 - U-turn  
-- Knock Off  
+- Aqua Jet  
+- Surging Strikes  
+- Close Combat  
 
-Tapu Koko @ Tapunium Z  
+Tapu Koko @ Air Balloon  
 Ability: Electric Surge  
 EVs: 252 SpA / 4 SpD / 252 Spe  
 Timid Nature  
 IVs: 0 Atk  
-- Protect  
 - Roost  
+- Protect  
 - Volt Switch  
 - Dazzling Gleam  
 
-Mimikyu @ Mimikium Z  
-Ability: Disguise  
+Garchomp @ Yache Berry  
+Ability: Rough Skin  
 EVs: 252 Atk / 4 SpD / 252 Spe  
 Jolly Nature  
 - Protect  
-- Play Rough  
-- Shadow Sneak  
 - Swords Dance  
+- Earthquake  
+- Dragon Claw  
 
-Blacephalon @ Life Orb  
-Ability: Beast Boost  
-EVs: 252 SpA / 4 SpD / 252 Spe  
-Timid Nature  
-IVs: 0 Atk  
-- Calm Mind  
-- Fire Blast  
-- Heat Wave  
-- Protect  
+Rillaboom @ Assault Vest  
+Ability: Grassy Surge  
+EVs: 252 Atk / 4 SpD / 252 Spe  
+Jolly Nature  
+- Fake Out  
+- Grassy Glide  
+- U-turn  
+- Wood Hammer  
+
+Incineroar @ Iapapa Berry  
+Ability: Intimidate  
+EVs: 252 HP / 252 Atk / 4 SpD  
+Adamant Nature  
+- Parting Shot  
+- Fake Out  
+- Darkest Lariat  
+- Fire Punch  
+

@@ -1,10 +1,11 @@
 import asyncio
 import numpy as np
+import random
 from poke_env.player import cross_evaluate, Gen8EnvSinglePlayer, RandomPlayer, wrap_for_old_gym_api
 from tabulate import tabulate
 from threading import Thread
 import keras
-
+import json
 from poke_env import to_id_str
 from poke_env.player import Player
 from poke_env.player_configuration import PlayerConfiguration
@@ -74,7 +75,9 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 async def main():
     # Create an instance of the SimpleRLPlayer
     
-    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent="D0ggos",server_configuration=ShowdownServerConfiguration, player_configuration=rl_config)
+    bot_team = await get_bot_team()
+
+    rl_player = SimpleRLPlayer(battle_format="gen8ou", opponent="D0ggos",server_configuration=ShowdownServerConfiguration, player_configuration=rl_config, team=bot_team)
 
     # Create the environment for training
     train_env = wrap_for_old_gym_api(rl_player)
@@ -120,6 +123,16 @@ async def main():
     dqn.test(train_env, nb_episodes=1, verbose=True, visualize=True) 
 
     train_env.close()
+
+
+
+### Functions to create the teams
+
+async def get_bot_team():
+    with open('bot_team.json') as json_file:
+        data = json.load(json_file)
+        return data["team"] 
+    
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())

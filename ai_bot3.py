@@ -91,12 +91,12 @@ async def main():
     test_env.close()
 
     # Create one environment for training and one for evaluation
-    opponent = RandomPlayer(battle_format="gen8randombattle")
+    opponent = SimpleHeuristicsPlayer(battle_format="gen8randombattle")
     train_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
     train_env = wrap_for_old_gym_api(train_env)
-    opponent = RandomPlayer(battle_format="gen8randombattle")
+    opponent = SimpleHeuristicsPlayer(battle_format="gen8randombattle")
     eval_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
@@ -114,7 +114,7 @@ async def main():
     model.add(Dense(n_action, activation="linear", name="Output", kernel_initializer='he_uniform', kernel_regularizer=keras.regularizers.l2(0.01), bias_regularizer=keras.regularizers.l2(0.01)))
 
     # Defining the DQN
-    memory = SequentialMemory(limit=250000, window_length=1)
+    memory = SequentialMemory(limit=100000, window_length=1)
 
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
@@ -122,7 +122,7 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=250000,
+        nb_steps=100000,
     )
 
     dqn = DQNAgent(
@@ -138,12 +138,12 @@ async def main():
     )
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
-    dqn.load_weights('dqn_weights.h5f')
+    dqn.load_weights('weights/heur_50k_dqn_weights.h5f')                    ## ACA SE CARGAN
 
     # Training the model
-    dqn.fit(train_env, nb_steps=250000)
+    dqn.fit(train_env, nb_steps=100000)
     train_env.close()
-    dqn.save_weights('dqn_weights.h5f', overwrite=True)
+    dqn.save_weights('weights/heur_100k_dqn_weights.h5f', overwrite=True)   ## ACA SE GUARDAN
     print("Training done and saved.")
 
     # Evaluating the model

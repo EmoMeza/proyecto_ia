@@ -119,7 +119,7 @@ async def main():
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
     # Load the pre-trained weights for rl_player
-    dqn.load_weights('dqn_weights.h5f')
+    # dqn.load_weights('dqn_weights.h5f')
     dqn.test(train_env, nb_episodes=1, verbose=True, visualize=True) 
 
     train_env.close()

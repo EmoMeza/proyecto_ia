@@ -114,7 +114,7 @@ async def main():
     model.add(Dense(n_action, activation="linear", name="Output", kernel_initializer='he_uniform', kernel_regularizer=keras.regularizers.l2(0.01), bias_regularizer=keras.regularizers.l2(0.01)))
 
     # Defining the DQN
-    memory = SequentialMemory(limit=500000, window_length=1)
+    memory = SequentialMemory(limit=250000, window_length=1)
 
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
@@ -122,7 +122,7 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=500000,
+        nb_steps=250000,
     )
 
     dqn = DQNAgent(
@@ -141,8 +141,8 @@ async def main():
     dqn.load_weights('weights/heur_200k_dqn_weights.h5f')                    ## ACA SE CARGAN
 
     # Training the model
-    dqn.fit(train_env, nb_steps=500000)
-    dqn.save_weights('weights/heur_500k_dqn_weights.h5f', overwrite=True)   ## ACA SE GUARDAN
+    dqn.fit(train_env, nb_steps=250000)
+    dqn.save_weights('weights/heur_250k_dqn_weights.h5f', overwrite=True)   ## ACA SE GUARDAN
     train_env.close()
     print("Training done and saved.")
 

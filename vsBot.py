@@ -76,8 +76,7 @@ async def main():
     # Create an instance of the SimpleRLPlayer
     
     bot_team = await get_bot_team()
-
-    rl_player = SimpleRLPlayer(battle_format="gen8ou", opponent="D0ggos",server_configuration=ShowdownServerConfiguration, player_configuration=rl_config, team=bot_team)
+    rl_player = SimpleRLPlayer(battle_format="gen8randombattle", opponent="Dogepot",server_configuration=ShowdownServerConfiguration, player_configuration=rl_config)
 
     # Create the environment for training
     train_env = wrap_for_old_gym_api(rl_player)
@@ -119,7 +118,7 @@ async def main():
     dqn.compile(optimizer=Adam(learning_rate=0.00025), metrics=["mae"])
 
     # Load the pre-trained weights for rl_player
-    # dqn.load_weights('dqn_weights.h5f')
+    dqn.load_weights('weights/dqn_weights.h5f')
     dqn.test(train_env, nb_episodes=1, verbose=True, visualize=True) 
 
     train_env.close()

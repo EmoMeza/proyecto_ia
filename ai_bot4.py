@@ -106,7 +106,7 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=100000,
+        nb_steps=200000,
     )
 
     sarsa = SARSAAgent(
@@ -122,9 +122,9 @@ async def main():
 
     sarsa.load_weights('weights/heur_100k_sarsa_weights.h5f')  # Load weights
 
-    sarsa.fit(train_env, nb_steps=150000)  # Train the SARSA agent
+    sarsa.fit(train_env, nb_steps=200000)  # Train the SARSA agent
 
-    sarsa.save_weights('weights/heur_150k_sarsa_weights.h5f', overwrite=True)  # Save weights
+    sarsa.save_weights('weights/heur_200k_sarsa_weights.h5f', overwrite=True)  # Save weights
 
     train_env.close()
     print("Training done and saved.")

@@ -1,7 +1,2 @@
-<<<<<<< HEAD
-model_checkpoint_path: "heur_150k_sarsa_weights.h5f"
-all_model_checkpoint_paths: "heur_150k_sarsa_weights.h5f"
-=======
 model_checkpoint_path: "heur_250k_dqn_weights.h5f"
 all_model_checkpoint_paths: "heur_250k_dqn_weights.h5f"
->>>>>>> 315ec8413b9ee2bf30546b7574e2b8846f9e9fbd

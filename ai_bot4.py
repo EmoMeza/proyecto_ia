@@ -4,7 +4,7 @@ import sys
 
 from gym.spaces import Space, Box
 from gym.utils.env_checker import check_env
-from rl.agents.sarsa import SarsaAgent
+from rl.agents.sarsa import SARSAAgent
 from rl.memory import SequentialMemory
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 from tabulate import tabulate
@@ -12,7 +12,7 @@ from tabulate import tabulate
 import tensorflow as tf
 import keras
 
-from keras.layers import Dense, Activation, Flatten, CuDNNLSTM, LSTM
+from keras.layers import Dense, Activation, Flatten
 from keras.models import Sequential
 from keras.optimizers import Adam
 
@@ -95,12 +95,10 @@ async def main():
     input_shape = (1,) + train_env.observation_space.shape
 
     model = Sequential()
-    model.add(Dense(128, name="Initial", activation="elu", input_shape=input_shape, kernel_initializer='he_uniform', use_bias=False))
+    model.add(Dense(128, name="Initial", activation="elu", input_shape=input_shape))
     model.add(Flatten())
-    model.add(Dense(64, name="Middle", activation="elu", kernel_initializer='he_uniform'))
-    model.add(Dense(n_action, activation="linear", name="Output", kernel_initializer='he_uniform', kernel_regularizer=keras.regularizers.l2(0.01), bias_regularizer=keras.regularizers.l2(0.01)))
-
-    memory = SequentialMemory(limit=50000, window_length=1)
+    model.add(Dense(64, name="Middle", activation="elu"))
+    model.add(Dense(n_action, activation="linear", name="Output"))
 
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
@@ -108,17 +106,15 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=50000,
+        nb_steps=100000,
     )
 
-    sarsa = SarsaAgent(
+    sarsa = SARSAAgent(
         model=model,
         nb_actions=n_action,
         policy=policy,
-        memory=memory,
         nb_steps_warmup=10000,
         gamma=0.5,
-        target_model_update=1,
         delta_clip=0.01,
     )
 
@@ -126,7 +122,7 @@ async def main():
 
     # sarsa.load_weights('weights/heur_50k_sarsa_weights.h5f')  # Load weights
 
-    sarsa.fit(train_env, nb_steps=50000)  # Train the SARSA agent
+    sarsa.fit(train_env, nb_steps=100000)  # Train the SARSA agent
 
     sarsa.save_weights('weights/heur_50k_sarsa_weights.h5f', overwrite=True)  # Save weights
 
@@ -139,52 +135,6 @@ async def main():
         f"SARSA Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
 
-    second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
-    eval_env.reset_env(restart=True, opponent=second_opponent)
-    print("Results against max base power player:")
-    sarsa.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
-    print(
-        f"SARSA Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
-    )
-
-    eval_env.reset_env(restart=False)
-
-    eval_env.reset_env(restart=True, opponent=opponent)
-
-    n_challenges = 100
-    placement_battles = 40
-
-    evaluation_future = evaluate_player(
-        player=eval_env.agent,
-        n_battles=n_challenges,
-        n_placement_battles=placement_battles,
-    )
-    print("Evaluation with included method:", evaluation_future)
-
-    eval_env.reset_env(restart=False)
-
-    n_challenges = 100
-    players = [
-        eval_env.agent,
-        RandomPlayer(battle_format="gen8randombattle"),
-        MaxBasePowerPlayer(battle_format="gen8randombattle"),
-        SimpleHeuristicsPlayer(battle_format="gen8randombattle"),
-    ]
-    cross_eval_task = background_cross_evaluate(players, n_challenges)
-    sarsa.test(
-        eval_env,
-        nb_episodes=n_challenges * (len(players) - 1),
-        verbose=True,
-        visualize=True,
-    )
-    cross_evaluation = cross_eval_task.result()
-    table = [["-"] + [p.username for p in players]]
-    for p_1, results in cross_evaluation.items():
-        table.append([p_1] + [cross_evaluation[p_1][p_2] for p_2 in results])
-    print("Cross evaluation of SARSA with baselines:")
-    print(tabulate(table))
-
-    eval_env.close()
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())

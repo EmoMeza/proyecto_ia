@@ -1,10 +1,12 @@
 import asyncio
 import numpy as np
-import sys
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from gym.spaces import Space, Box
 from gym.utils.env_checker import check_env
 from rl.agents.sarsa import SARSAAgent
+from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 from tabulate import tabulate
@@ -74,7 +76,7 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
         )
 
 
-async def main():
+async def cross_eval():
     opponent = SimpleHeuristicsPlayer(battle_format="gen8randombattle")
     test_env = SimpleRLPlayer(battle_format="gen8randombattle", start_challenging=True, opponent=opponent)
     check_env(test_env)
@@ -106,35 +108,79 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=200000,
+        nb_steps=100000,
     )
 
-    sarsa = SARSAAgent(
+    # sarsa = SARSAAgent(
+    #     model=model,
+    #     nb_actions=n_action,
+    #     policy=policy,
+    #     nb_steps_warmup=10000,
+    #     gamma=0.5,
+    #     delta_clip=0.01,
+    # )
+
+    memory = SequentialMemory(limit=500000, window_length=1)
+    sarsa = DQNAgent(
         model=model,
         nb_actions=n_action,
         policy=policy,
+        memory=memory,
         nb_steps_warmup=10000,
         gamma=0.5,
+        target_model_update=1,
         delta_clip=0.01,
+        enable_double_dqn=True,
     )
 
     sarsa.compile(optimizer=Adam(learning_rate=0.0005), metrics=["mae"])
 
-    sarsa.load_weights('weights/heur_100k_sarsa_weights.h5f')  # Load weights
+    sarsa.load_weights('weights/heur_100k_dqn_weights.h5f')  # Load weights
+    # Debug if weights are loaded
+    print(sarsa.test(eval_env, nb_episodes=1, visualize=False))
 
-    sarsa.fit(train_env, nb_steps=200000)  # Train the SARSA agent
+    eval_env.reset_env(restart=True)
 
-    sarsa.save_weights('weights/heur_200k_sarsa_weights.h5f', overwrite=True)  # Save weights
 
-    train_env.close()
-    print("Training done and saved.")
 
-    print("Results against random player:")
-    sarsa.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
-    print(
-        f"SARSA Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
+    n_challenges = 30
+    placement_battles = 40
+
+    # Note: The evaluate_player function returns a future. You can call result() on it to get the result.
+    evaluation_future = evaluate_player(
+        player=eval_env.agent,
+        n_battles=n_challenges,
+        n_placement_battles=placement_battles,
     )
+    print("Evaaaaaaa ", evaluation_future)
+    evaluation_result = evaluation_future
+    print("Evaluation with included method:", evaluation_result)
 
+    eval_env.reset_env(restart=False)
+
+
+    n_challenges = 100
+    players = [
+        eval_env.agent,
+        RandomPlayer(battle_format="gen8randombattle"),
+        MaxBasePowerPlayer(battle_format="gen8randombattle"),
+        SimpleHeuristicsPlayer(battle_format="gen8randombattle"),
+    ]
+    cross_eval_task = background_cross_evaluate(players, n_challenges)
+    sarsa.test(
+        eval_env,
+        nb_episodes=n_challenges * (len(players) - 1),
+        verbose=True,
+        visualize=True,
+    )
+    cross_evaluation = cross_eval_task.result()
+    table = [["-"] + [p.username for p in players]]
+    for p_1, results in cross_evaluation.items():
+        table.append([p_1] + [cross_evaluation[p_1][p_2] for p_2 in results])
+    print("Cross evaluation of DQN with baselines:")
+    print(tabulate(table))
+
+    eval_env.close()
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+    asyncio.get_event_loop().run_until_complete(cross_eval())

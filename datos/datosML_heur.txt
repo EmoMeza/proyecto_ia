@@ -75,3 +75,102 @@ SimpleHeuristics 3  0.9               1.0             0.93
 #############################
 ##### 200k iteraciones ######
 #############################
+
+#############################
+##### 2050k iteraciones ######
+#############################
+2023-07-10 21:50:01.183973: W tensorflow/c/c_api.cc:300] Operation '{name:'Output/BiasAdd' id:88 op device:{requested: '', assigned: ''} def:{{{node Output/BiasAdd}} = BiasAdd[T=DT_FLOAT, _has_manual_control_dependencies=true, data_format="NHWC"](Output/MatMul, Output/BiasAdd/ReadVariableOp)}}' was changed by setting attribute after it was run by a session. This mutation will have no effect, and will trigger an error in the future. Either don't modify nodes after running them or create a new session.
+10000/10000 [==============================] - 205s 20ms/step - reward: -1.5756
+378 episodes - episode_reward: -41.683 [-48.000, 34.557]
+
+Interval 2 (10000 steps performed)
+    1/10000 [..............................] - ETA: 3:09 - reward: -0.67092023-07-10 21:53:26.130074: W tensorflow/c/c_api.cc:300] Operation '{name:'Output_1/BiasAdd' id:175 op device:{requested: '', assigned: ''} def:{{{node Output_1/BiasAdd}} = BiasAdd[T=DT_FLOAT, _has_manual_control_dependencies=true, data_format="NHWC"](Output_1/MatMul, Output_1/BiasAdd/ReadVariabgn' id:678 op device:{requested: '', assigned: ''} def:{{{node training/Adam/Middle/bias/m/Assign}} = AssignVariableOp[_has_manual_control_dependencies=true, dtype=DT_FLOAT, validate_shape=false](training/Adam/Middle/bias/m, training/Adam/Middle/bias/m/Initializer/zeros)}}' was changed by setting attribute after it was run by a session. This mutation will have no effect, and will trigger an error in the future. Either don't modify nodes after running them or create a new session.
+10000/10000 [==============================] - 244s 24ms/step - reward: -1.5154
+370 episodes - episode_reward: -40.943 [-48.000, 35.614] - loss: 0.019 - mae: 0.251 - mean_q: 0.022 - mean_eps: 0.943
+
+Interval 3 (20000 steps performed)
+10000/10000 [==============================] - 248s 25ms/step - reward: -1.5432
+377 episodes - episode_reward: -40.928 [-48.000, 35.708] - loss: 0.019 - mae: 0.265 - mean_q: -0.017 - mean_eps: 0.905
+
+Interval 4 (30000 steps performed)
+10000/10000 [==============================] - 251s 25ms/step - reward: -1.5612
+388 episodes - episode_reward: -40.250 [-48.000, 35.091] - loss: 0.019 - mae: 0.283 - mean_q: -0.051 - mean_eps: 0.867
+10000/10000 [==============================] - 253s 25ms/step - reward: -1.5929
+388 episodes - episode_reward: -41.061 [-48.000, 34.859] - loss: 0.019 - mae: 0.292 - mean_q: -0.052 - mean_eps: 0.829
+
+Interval 6 (50000 steps performed)
+10000/10000 [==============================] - 250s 25ms/step - reward: -1.5829
+387 episodes - episode_reward: -40.901 [-48.000, 35.128] - loss: 0.019 - mae: 0.303 - mean_q: -0.065 - mean_eps: 0.791
+
+Interval 7 (60000 steps performed)
+10000/10000 [==============================] - 252s 25ms/step - reward: -1.5624
+389 episodes - episode_reward: -40.155 [-48.000, 35.032] - loss: 0.020 - mae: 0.302 - mean_q: -0.061 - mean_eps: 0.753
+
+Interval 8 (70000 steps performed)
+10000/10000 [==============================] - 251s 25ms/step - reward: -1.5949
+387 episodes - episode_reward: -41.206 [-48.000, 32.952] - loss: 0.020 - mae: 0.299 - mean_q: -0.058 - mean_eps: 0.715
+
+Interval 9 (80000 steps performed)
+10000/10000 [==============================] - 274s 27ms/step - reward: -1.5338
+388 episodes - episode_reward: -39.544 [-48.000, 35.411] - loss: 0.020 - mae: 0.311 - mean_q: -0.072 - mean_eps: 0.677
+
+Interval 10 (90000 steps performed)
+10000/10000 [==============================] - 280s 28ms/step - reward: -1.5561
+388 episodes - episode_reward: -40.094 [-48.000, 37.269] - loss: 0.019 - mae: 0.298 - mean_q: -0.056 - mean_eps: 0.639
+
+Interval 11 (100000 steps performed)
+10000/10000 [==============================] - 281s 28ms/step - reward: -1.5113
+381 episodes - episode_reward: -39.655 [-48.000, 35.156] - loss: 0.020 - mae: 0.296 - mean_q: -0.050 - mean_eps: 0.601
+
+Interval 12 (110000 steps performed)
+10000/10000 [==============================] - 282s 28ms/step - reward: -1.5007
+382 episodes - episode_reward: -39.288 [-48.000, 38.241] - loss: 0.020 - mae: 0.298 - mean_q: -0.052 - mean_eps: 0.563
+
+Interval 13 (120000 steps performed)
+10000/10000 [==============================] - 279s 28ms/step - reward: -1.5181
+385 episodes - episode_reward: -39.456 [-48.000, 37.627] - loss: 0.020 - mae: 0.291 - mean_q: -0.043 - mean_eps: 0.525
+
+Interval 14 (130000 steps performed)
+10000/10000 [==============================] - 293s 29ms/step - reward: -1.4614
+388 episodes - episode_reward: -37.667 [-48.000, 40.501] - loss: 0.020 - mae: 0.288 - mean_q: -0.034 - mean_eps: 0.487
+
+Interval 15 (140000 steps performed)
+10000/10000 [==============================] - 287s 29ms/step - reward: -1.4205
+386 episodes - episode_reward: -36.800 [-48.000, 39.553] - loss: 0.020 - mae: 0.291 - mean_q: -0.040 - mean_eps: 0.449
+
+Interval 16 (150000 steps performed)
+10000/10000 [==============================] - 279s 28ms/step - reward: -1.5090
+390 episodes - episode_reward: -38.669 [-47.940, 36.000] - loss: 0.020 - mae: 0.291 - mean_q: -0.038 - mean_eps: 0.411
+_eps: 0.373
+
+Interval 18 (170000 steps performed)
+10000/10000 [==============================] - 295s 29ms/step - reward: -1.4558
+392 episodes - episode_reward: -37.150 [-48.000, 35.627] - loss: 0.020 - mae: 0.284 - mean_q: -0.032 - mean_eps: 0.335
+
+Interval 19 (180000 steps performed)
+10000/10000 [==============================] - 288s 29ms/step - reward: -1.4344
+397 episodes - episode_reward: -36.117 [-48.000, 40.527] - loss: 0.020 - mae: 0.286 - mean_q: -0.031 - mean_eps: 0.297
+
+Interval 20 (190000 steps performed)
+10000/10000 [==============================] - 290s 29ms/step - reward: -1.4492
+396 episodes - episode_reward: -36.603 [-48.000, 40.793] - loss: 0.020 - mae: 0.277 - mean_q: -0.016 - mean_eps: 0.259
+
+Interval 21 (200000 steps performed)
+10000/10000 [==============================] - 293s 29ms/step - reward: -1.3135
+387 episodes - episode_reward: -33.945 [-48.000, 41.224] - loss: 0.020 - mae: 0.274 - mean_q: -0.013 - mean_eps: 0.221
+
+
+Interval 23 (220000 steps performed)
+10000/10000 [==============================] - 291s 29ms/step - reward: -1.4050
+391 episodes - episode_reward: -35.954 [-48.000, 44.463] - loss: 0.020 - mae: 0.271 - mean_q: -0.009 - mean_eps: 0.145
+
+Interval 24 (230000 steps performed)
+10000/10000 [==============================] - 302s 30ms/step - reward: -1.3835
+395 episodes - episode_reward: -35.022 [-48.000, 44.194] - loss: 0.020 - mae: 0.271 - mean_q: -0.012 - mean_eps: 0.107
+
+Interval 25 (240000 steps performed)
+10000/10000 [==============================] - 305s 30ms/step - reward: -1.3451
+done, took 6844.089 seconds
+Training done and saved.
+Results against random player:
+2023-07-10 23:44:04,922 - SimpleRLPlayer 3 - WARNING - Received pm: |pm| SimpleRLPlayer 3|~|/error /choose - must be used in a chat room, not a console

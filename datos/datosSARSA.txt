@@ -1,0 +1,40 @@
+########################
+### 100k iteraciones ###
+########################
+10000/10000 [==============================] - 173s 17ms/step - reward: -1.5620
+380 episodes - episode_reward: -41.106 [-48.000, 36.396]
+Interval 2
+10000/10000 [==============================] - 206s 21ms/step - reward: -1.4901
+367 episodes - episode_reward: -40.592 [-48.000, 32.756] - loss: 0.007 - mae: 0.393 - mean_q: -0.196 - mean_eps: 0.857
+
+Interval 3 (20000 steps performed)
+10000/10000 [==============================] - 206s 21ms/step - reward: -1.5737
+384 episodes - episode_reward: -40.976 [-48.000, 33.000] - loss: 0.007 - mae: 0.407 - mean_q: -0.217 - mean_eps: 0.763
+
+Interval 4 (30000 steps performed)
+10000/10000 [==============================] - 208s 21ms/step - reward: -1.5395
+379 episodes - episode_reward: -40.605 [-48.000, 39.864] - loss: 0.008 - mae: 0.373 - mean_q: -0.201 - mean_eps: 0.668
+
+Interval 5 (40000 steps performed)
+10000/10000 [==============================] - 209s 21ms/step - reward: -1.5096
+386 episodes - episode_reward: -39.122 [-48.000, 36.611] - loss: 0.008 - mae: 0.381 - mean_q: -0.211 - mean_eps: 0.573
+
+Interval 6 (50000 steps performed)
+10000/10000 [==============================] - 206s 21ms/step - reward: -1.5470
+384 episodes - episode_reward: -40.306 [-48.000, 38.875] - loss: 0.008 - mae: 0.403 - mean_q: -0.235 - mean_eps: 0.477
+
+Interval 7 (60000 steps performed)
+10000/10000 [==============================] - 217s 22ms/step - reward: -1.5041
+388 episodes - episode_reward: -38.741 [-48.000, 36.678] - loss: 0.008 - mae: 0.404 - mean_q: -0.231 - mean_eps: 0.383
+
+Interval 8 (70000 steps performed)
+10000/10000 [==============================] - 213s 21ms/step - reward: -1.4642
+389 episodes - episode_reward: -37.664 [-48.000, 41.182] - loss: 0.008 - mae: 0.395 - mean_q: -0.219 - mean_eps: 0.288
+
+Interval 9 (80000 steps performed)
+10000/10000 [==============================] - 215s 22ms/step - reward: -1.3893
+382 episodes - episode_reward: -36.360 [-48.000, 38.012] - loss: 0.008 - mae: 0.388 - mean_q: -0.200 - mean_eps: 0.192
+
+Interval 10 (90000 steps performed)
+10000/10000 [==============================] - 212s 21ms/step - reward: -1.5039
+done, took 2065.405 seconds

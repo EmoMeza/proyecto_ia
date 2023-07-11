@@ -114,7 +114,7 @@ async def main():
     model.add(Dense(n_action, activation="linear", name="Output", kernel_initializer='he_uniform', kernel_regularizer=keras.regularizers.l2(0.01), bias_regularizer=keras.regularizers.l2(0.01)))
 
     # Defining the DQN
-    memory = SequentialMemory(limit=250000, window_length=1)
+    memory = SequentialMemory(limit=500000, window_length=100)
 
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
@@ -122,7 +122,7 @@ async def main():
         value_max=1.0,
         value_min=0.05,
         value_test=0.0,
-        nb_steps=250000,
+        nb_steps=500000,
     )
 
     dqn = DQNAgent(
@@ -141,8 +141,8 @@ async def main():
     dqn.load_weights('weights/heur_200k_dqn_weights.h5f')                    ## ACA SE CARGAN
 
     # Training the model
-    dqn.fit(train_env, nb_steps=250000)
-    dqn.save_weights('weights/heur_250k_dqn_weights.h5f', overwrite=True)   ## ACA SE GUARDAN
+    dqn.fit(train_env, nb_steps=500000)
+    dqn.save_weights('weights/heur_500k_dqn_weights.h5f', overwrite=True)   ## ACA SE GUARDAN
     train_env.close()
     print("Training done and saved.")
 
@@ -163,21 +163,6 @@ async def main():
 
     eval_env.reset_env(restart=True, opponent=opponent)
 
-
-    #! DESDE ACA HACIA ABAJO ESTA TODO CURSEEDDD. PARA VER COMO ESTA, DEJAR CORRER COMO ESTA
-
-    # Evaluate the player with included util method
-    # n_challenges = 30
-    # placement_battles = 40
-    # eval_task = background_evaluate_player(
-    #     eval_env.agent, n_challenges, placement_battles
-    # )
-    # dqn.test(eval_env, nb_episodes=n_challenges, verbose=True, visualize=True) #! HANGS HERE ON LAST EPISODE
-    # print("Evaluation with included method:", eval_task.result())
-    # eval_env.reset_env(restart=False)
-
-    #! CHAT GPTTTT !!!!! ORIGINAL ARRIBA
-    # Evaluate the player with included util methods
     n_challenges = 100
     placement_battles = 40
 
@@ -192,11 +177,6 @@ async def main():
     print("Evaluation with included method:", evaluation_result)
 
     eval_env.reset_env(restart=False)
-
-
-    #! HASTA ACA CURSED
-
-    # eval_env.reset_env(restart=True)
 
     # Cross evaluate the player with included util method
     n_challenges = 100

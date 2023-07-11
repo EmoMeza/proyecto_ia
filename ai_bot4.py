@@ -120,11 +120,11 @@ async def main():
 
     sarsa.compile(optimizer=Adam(learning_rate=0.0005), metrics=["mae"])
 
-    # sarsa.load_weights('weights/heur_50k_sarsa_weights.h5f')  # Load weights
+    sarsa.load_weights('weights/heur_100k_sarsa_weights.h5f')  # Load weights
 
-    sarsa.fit(train_env, nb_steps=100000)  # Train the SARSA agent
+    sarsa.fit(train_env, nb_steps=150000)  # Train the SARSA agent
 
-    sarsa.save_weights('weights/heur_50k_sarsa_weights.h5f', overwrite=True)  # Save weights
+    sarsa.save_weights('weights/heur_150k_sarsa_weights.h5f', overwrite=True)  # Save weights
 
     train_env.close()
     print("Training done and saved.")

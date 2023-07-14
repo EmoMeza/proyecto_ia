@@ -1,0 +1,28 @@
+con cambios siempre y sin toxic agregado
+total time of execution: 1547.2473592758179 seconds
+From a total matches of 5000 matches 
+MaxDamagePlayer won 3974 with a winrate of 0.7948 
+MaxDefensePlayer won 1026 with a winrate of 0.2052
+
+sin cambios siempre (10%) y sin toxic agregado
+total time of execution: 881.8501346111298 seconds
+From a total matches of 5000 matches
+MaxDamagePlayer won 4318 with a winrate of 0.8636
+MaxDefensePlayer won 682 with a winrate of 0.1364
+
+con cambios siempre y con toxic agregado (solamente si tiene toxic y si el enemigo no tiene estatus e inmunidades)
+total time of execution: 945.0819492340088 seconds
+From a total matches of 5000 matches
+MaxDamagePlayer won 3026 with a winrate of 0.6052
+MaxDefensePlayer won 1974 with a winrate of 0.3948
+
+total time of execution: 876.8431625366211 seconds
+From a total matches of 5000 matches
+MaxDamagePlayer won 3024 with a winrate of 0.6048
+MaxDefensePlayer won 1976 with a winrate of 0.3952
+
+sin cambios siempre (10%) y con toxic agregado (solamente si tiene toxic y si el enemigo no tiene estatus e inmunidades)
+total time of execution: 528.2058019638062 seconds
+From a total matches of 5000 matches 
+MaxDamagePlayer won 3657 with a winrate of 0.7314
+MaxDefensePlayer won 1343 with a winrate of 0.2686
